@@ -526,7 +526,7 @@
         cellStyle: undefined,
         searchable: true,
         searchFormatter: true,
-        cardVisible: true
+        cardVisible: true,
     };
 
     BootstrapTable.EVENTS = {
@@ -1055,7 +1055,7 @@
         }
 
         // showColumns, showToggle, showRefresh
-        html = [sprintf('<div class="columns columns-%s btn-group pull-%s">',
+        html = [sprintf('<div class="columns columns-%s btn-group pull-%s" role="group">',
             this.options.buttonsAlign, this.options.buttonsAlign)];
 
         if (typeof this.options.icons === 'string') {
@@ -1102,7 +1102,7 @@
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.columns),
                 ' <span class="caret"></span>',
                 '</button>',
-                '<ul class="dropdown-menu" role="menu">');
+                '<ul class="dropdown-menu">');
 
             $.each(this.columns, function (i, column) {
                 if (column.radio || column.checkbox) {
@@ -1116,9 +1116,9 @@
                 var checked = column.visible ? ' checked="checked"' : '';
 
                 if (column.switchable) {
-                    html.push(sprintf('<li>' +
+                    html.push(sprintf('<a class="dropdown-item" href="#">' +
                         '<label><input type="checkbox" data-field="%s" value="%s"%s> %s</label>' +
-                        '</li>', column.field, i, checked, column.title));
+                        '</a>', column.field, i, checked, column.title));
                     switchableCount++;
                 }
             });
@@ -1157,7 +1157,7 @@
                 $keepOpen.find('input').prop('disabled', true);
             }
 
-            $keepOpen.find('li').off('click').on('click', function (event) {
+            $keepOpen.find('.dropdown-item').off('click').on('click', function (event) {
                 event.stopImmediatePropagation();
             });
             $keepOpen.find('input').off('click').on('click', function () {
@@ -1173,7 +1173,7 @@
             html.push(
                 '<div class="pull-' + this.options.searchAlign + ' search">',
                 sprintf('<input class="form-control' +
-                    sprintf(' input-%s', this.options.iconSize) +
+                    sprintf(' form-control-%s', this.options.iconSize) +
                     '" type="text" placeholder="%s">',
                     this.options.formatSearch()),
                 '</div>');
@@ -1370,7 +1370,7 @@
                     '</span>',
                     ' <span class="caret"></span>',
                     '</button>',
-                    '<ul class="dropdown-menu" role="menu">'
+                    '<div class="dropdown-menu">'
                 ];
 
             if (typeof this.options.pageList === 'string') {
@@ -1392,10 +1392,10 @@
                     } else {
                         active = page === that.options.pageSize ? ' class="active"' : '';
                     }
-                    pageNumber.push(sprintf('<li%s><a href="javascript:void(0)">%s</a></li>', active, page));
+                    pageNumber.push(sprintf('<a class="dropdown-item" %s href="#">%s</a>', active, page));
                 }
             });
-            pageNumber.push('</ul></span>');
+            pageNumber.push('</div></span>');
 
             html.push(this.options.formatRecordsPerPage(pageNumber.join('')));
             html.push('</span>');
