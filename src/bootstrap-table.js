@@ -605,12 +605,12 @@
             this.options.formatLoadingMessage(),
             '</div>',
             '</div>',
+            '</div>',
             '<div class="fixed-table-footer"><table><tr></tr></table></div>',
             this.options.paginationVAlign === 'bottom' || this.options.paginationVAlign === 'both' ?
                 '<div class="fixed-table-pagination"></div>' :
                 '',
             '</div>',
-            '</div>'
         ].join(''));
 
         this.$container.insertAfter(this.$el);
