@@ -188,12 +188,8 @@
     margin-left: 5px;
 }
 
-.fixed-table-toolbar .columns label {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 1.428571429;
+.fixed-table-toolbar .columns.btn-group>.btn:first-child {
+    margin-bottom: 1px;
 }
 
 .fixed-table-toolbar .bs-bars,
@@ -202,7 +198,6 @@
     position: relative;
     margin-top: 10px;
     margin-bottom: 10px;
-    line-height: 34px;
 }
 
 .fixed-table-pagination li.disabled a {

@@ -1055,7 +1055,9 @@
         }
 
         // showColumns, showToggle, showRefresh
-        html = [sprintf('<div class="columns columns-%s btn-group pull-%s" role="group">',
+        html = [sprintf('<div class="columns columns-%s btn-group' +
+                    sprintf(' btn-group-%s', this.options.iconSize) +
+                    ' pull-%s" role="group">',
             this.options.buttonsAlign, this.options.buttonsAlign)];
 
         if (typeof this.options.icons === 'string') {
@@ -1065,7 +1067,6 @@
         if (this.options.showPaginationSwitch) {
             html.push(sprintf('<button class="btn' +
                     sprintf(' btn-%s', this.options.buttonsClass) +
-                    sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="paginationSwitch" title="%s">',
                     this.options.formatPaginationSwitch()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.paginationSwitchDown),
@@ -1075,7 +1076,6 @@
         if (this.options.showRefresh) {
             html.push(sprintf('<button class="btn' +
                     sprintf(' btn-%s', this.options.buttonsClass) +
-                    sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="refresh" title="%s">',
                     this.options.formatRefresh()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.refresh),
@@ -1085,7 +1085,6 @@
         if (this.options.showToggle) {
             html.push(sprintf('<button class="btn' +
                     sprintf(' btn-%s', this.options.buttonsClass) +
-                    sprintf(' btn-%s', this.options.iconSize) +
                     '" type="button" name="toggle" title="%s">',
                     this.options.formatToggle()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.toggle),
@@ -1093,16 +1092,17 @@
         }
 
         if (this.options.showColumns) {
-            html.push(sprintf('<div class="keep-open btn-group" title="%s">',
+            html.push(sprintf('<div class="keep-open btn-group' +
+                    sprintf(' btn-group-%s', this.options.iconSize) +
+                    '" title="%s">',
                     this.options.formatColumns()),
                 '<button type="button" class="btn' +
                 sprintf(' btn-%s', this.options.buttonsClass) +
-                sprintf(' btn-%s', this.options.iconSize) +
                 ' dropdown-toggle" data-toggle="dropdown">',
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.columns),
                 ' <span class="caret"></span>',
                 '</button>',
-                '<ul class="dropdown-menu">');
+                '<div class="dropdown-menu">');
 
             $.each(this.columns, function (i, column) {
                 if (column.radio || column.checkbox) {
@@ -1117,12 +1117,12 @@
 
                 if (column.switchable) {
                     html.push(sprintf('<a class="dropdown-item" href="#">' +
-                        '<label><input type="checkbox" data-field="%s" value="%s"%s> %s</label>' +
+                        '<input type="checkbox" data-field="%s" value="%s"%s> %s' +
                         '</a>', column.field, i, checked, column.title));
                     switchableCount++;
                 }
             });
-            html.push('</ul>',
+            html.push('</div>',
                 '</div>');
         }
 
@@ -1155,16 +1155,23 @@
 
             if (switchableCount <= this.options.minimumCountColumns) {
                 $keepOpen.find('input').prop('disabled', true);
+                $keepOpen.find('.dropdown-item').addClass('disabled');
             }
 
             $keepOpen.find('.dropdown-item').off('click').on('click', function (event) {
                 event.stopImmediatePropagation();
+                var input = $(this).find('input').get(0);
+                if ($(this).hasClass('disabled') || event.target === input) {
+                    return;
+                }
+                input.checked = !input.checked;
+                $(input).trigger("change");
             });
-            $keepOpen.find('input').off('click').on('click', function () {
-                var $this = $(this);
 
-                that.toggleColumn($(this).val(), $this.prop('checked'), false);
-                that.trigger('column-switch', $(this).data('field'), $this.prop('checked'));
+            $keepOpen.find('input').off('change').on('change', function (event) {
+                var $this = $(this);
+                that.toggleColumn($this.val(), $this.prop('checked'), false);
+                that.trigger('column-switch', $this.data('field'), $this.prop('checked'));
             });
         }
 
@@ -2270,6 +2277,7 @@
 
         if (this.options.showColumns) {
             var $items = this.$toolbar.find('.keep-open input').prop('disabled', false);
+            this.$toolbar.find('.keep-open .dropdown-item').removeClass('disabled');
 
             if (needUpdate) {
                 $items.filter(sprintf('[value="%s"]', index)).prop('checked', checked);
@@ -2277,6 +2285,7 @@
 
             if ($items.filter(':checked').length <= this.options.minimumCountColumns) {
                 $items.filter(':checked').prop('disabled', true);
+                $items.filter(':checked').parent('.dropdown-item').addClass('disabled');
             }
         }
     };
@@ -2811,6 +2820,7 @@
 
             if ($items.filter(':checked').length <= this.options.minimumCountColumns) {
                 $items.filter(':checked').prop('disabled', true);
+                $items.filter(':checked').parent('.dropdown-item').addClass('disabled');
             }
         }
     };
